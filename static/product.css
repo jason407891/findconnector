@@ -1,0 +1,79 @@
+.factorystock_title{
+    margin:20px;
+    font-size: 24px;
+    text-align: start;
+    color: #FF781C;
+}
+.factorystock_title span{
+    color:black;
+    font-size: 20px;
+}
+
+.factorystock_container{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:20px;
+    background-color: #EDEAEA;
+    border-radius: 8px;
+}
+.factorystock_column{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /*可以讓裡面的元素垂直排列*/
+    margin-top:20px;    
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.factorystock_column div{
+    width:100px;
+    margin-top:5px;
+    margin-bottom: 5px;
+}
+.factorystock_image{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width:100px;
+    height:100px;
+    border: black 1px solid;
+}
+
+.agent_title{
+    margin:20px;
+    font-size: 24px;
+    text-align: start;
+    color: #FF781C;
+}
+.agent_title span{
+    color:black;
+    font-size: 20px;
+}
+
+.agent_container{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:20px;
+    background-color: #EDEAEA;
+    border-radius: 8px;
+}
+.agent_column{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /*可以讓裡面的元素垂直排列*/
+    margin-top:20px;    
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.agent_column div{
+    width:100px;
+    margin-top:5px;
+    margin-bottom: 5px;
+}

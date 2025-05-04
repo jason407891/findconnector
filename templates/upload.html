@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FINDCONNECTOR</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='upload.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div class="header">
+        </div>
+        <div class="uploadarea">
+            <div class="uploadone" onclick="handle_upload('one')">新增單筆庫存資料</div>
+            <div class="uploadmany" onclick="handle_upload('many')">批量上傳庫存資料</div>
+        </div>
+        <div class="upload_history">
+            <div class="upload_record">
+                <div class="upload_record_title" onclick="showhistory()">查看上傳記錄</div>
+                <!--
+                <div class="upload_container">
+                        <div class="content">
+                            <div>上傳時間</div>
+                            <div>2025/04/16</div>
+                        </div>
+                        <div class="content">
+                            <div>產品編號</div>
+                            <div>PAP-02V-S</div>
+                        </div>
+                        <div class="content">
+                            <div>製造商</div>
+                            <div>JST</div>
+                        </div>
+                        <div class="content">
+                            <div>庫存數量</div>
+                            <div>100</div>
+                        </div>
+                        <div class="content">
+                            <img src="../static/edit.png" class="editimg"></img>
+                        </div>
+                        <div class="content">
+                            <img src="../static/bin.png" class="deleteimg"></img>
+                        </div>
+                </div>
+                <div class="upload_container">
+                    <div class="content">
+                        <div>上傳時間</div>
+                        <div>2025/04/16</div>
+                    </div>
+                    <div class="content">
+                        <div>產品編號</div>
+                        <div>PAP-02V-S</div>
+                    </div>
+                    <div class="content">
+                        <div>製造商</div>
+                        <div>JST</div>
+                    </div>
+                    <div class="content">
+                        <div>庫存數量</div>
+                        <div>100</div>
+                    </div>
+                    <div class="content">
+                        <img src="../static/edit.png" class="editimg"></img>
+                    </div>
+                    <div class="content">
+                        <img src="../static/bin.png" class="deleteimg"></img>
+                    </div>
+                -->
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+        </div>
+        <div class="account">
+        </div>
+        <div class="upload_form">
+            <form class="upload_form_single">
+                <div class="formbar"></div>
+                <div class="formtitle">新增單筆庫存資料</div>
+                <img src="../static/close.png" class="closeuploadimg" onclick="handle_upload('close')"></img>
+                <div class="formcontent">
+                    <div class="contentrow">
+                        <div class="formcontenttext">製造商</div>
+                        <input class="forminput" name="brand">
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">產品編號</div>
+                        <input class="forminput" name="partnumber">
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">庫存數量</div>
+                        <input class="forminput" name="quantity">  
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">製造日期</div>
+                        <input class="forminput" name="datecode">
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">產品種類</div>
+                        <input class="forminput" name="category">
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">產品參數</div>
+                        <input class="forminput" name="description">
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">產品價格</div>
+                        <input class="forminput" name="price" placeholder="NT$">
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">上傳圖片</div>
+                        <input class="forminput" type="file" name="product_img">
+                    </div>      
+                </div>
+                <div class="formsubmit" onclick="upload_single()">上傳</div>
+            </form>
+            <form class="upload_form_many" enctype="multipart/form-data">
+                <div class="formbar"></div>
+                <div class="formtitle">批量上傳庫存資料</div>
+                <div class="formclose" onclick="handle_upload('close')"><img src="../static/close.png" class="closeuploadimg"></img></div>
+                <div class="formcontent">
+                    <div class="contentrow">
+                        <a href="./static/upload_example.xlsx" class="formcontenttext">下載範例</a>
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">上傳檔案</div>
+                        <input class="forminput" type="file" name="uploadfile" accept=".xlsx, .xls" required>
+                    </div>
+                </div>
+                <div class="formsubmit" onclick="upload_many()">上傳</div>
+            </form>
+        </div>
+        <script src="{{url_for('static', filename='common.js') }}"></script>
+        <script>
+            function handle_upload(type){
+                let upload_one = document.getElementsByClassName("upload_form_single")[0];
+                let upload_many = document.getElementsByClassName("upload_form_many")[0];
+                let close_form= document.getElementsByClassName("closeuploadimg")[0];
+                if(type == "one"){
+                    upload_one.style.display="flex";
+                    upload_many.style.display="none";
+                }else if(type == "many"){
+                    upload_many.style.display="flex";
+                    upload_one.style.display="none";
+                }else if(type == "close"){
+                    upload_one.style.display="none";
+                    upload_many.style.display="none";
+                }
+            }
+
+            //上傳一個產品
+            function upload_single(){
+                let formdata = new FormData(document.querySelector(".upload_form_single"));
+                let token = localStorage.getItem("token");
+                fetch("/api/uploadone",{
+                    method: "POST",
+                    headers: {
+                        "Authorization": token
+                    },
+                    body: formdata
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    if(data.error){
+                        console.log(data.message);
+                    }else{
+                        Swal.fire('新增成功','已成功新增一筆庫存資料','success');
+                    }
+                })
+                .catch(error=>console.log(error))
+
+            }
+
+            //上傳整個檔案的產品
+            function upload_many(){
+                let formdata = new FormData(document.querySelector(".upload_form_many"));
+                let token = localStorage.getItem("token");
+                fetch("/api/batchupload",{
+                    method: "POST",
+                    headers: {
+                        "Authorization": token
+                    },
+                    body: formdata
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    if(data.error){
+                        console.log(data.message);
+                    }else{
+                        Swal.fire('新增成功','已成功新增多筆庫存資料','success');
+                    }
+                })
+                .catch(error=>console.log(error))
+            }
+
+
+            //列出歷史紀錄
+            function showhistory(){
+                let token = localStorage.getItem("token");
+                fetch("/api/uploadhistory",{
+                    method: "GET",
+                    headers: {
+                        "Authorization": token
+                    }
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    let history_elements=data;
+                    history_elements.forEach(
+                        item=>{
+                            let history = document.getElementsByClassName("upload_history")[0];
+                            let history_element = document.createElement("div");
+                            history_element.className="upload_container";
+                            history_element.innerHTML=`
+                            <div class="content">
+                            <div>上傳時間</div>
+                            <div>${item.update_time}</div>
+                            </div>
+                            <div class="content">
+                                <div>產品編號</div>
+                                <div>${item.partnumber}</div>
+                            </div>
+                            <div class="content">
+                                <div>製造商</div>
+                                <div>${item.brand}</div>
+                            </div>
+                            <div class="content">
+                                <div>庫存數量</div>
+                                <div>${item.qty}</div>
+                            </div>
+                            <div class="content">
+                                <img src="../static/edit.png" class="editimg"></img>
+                            </div>
+                            <div class="content">
+                                <img src="../static/bin.png" class="deleteimg"></img>
+                            </div>
+                            `;
+                            history.appendChild(history_element);
+                    })
+                })
+                .catch(error=>console.log(error))
+                
+            }
+
+            //監聽登入狀況，還沒登入的人不能使用
+            window.addEventListener("load", async () => {
+            let status = await checkstatus();
+            if (status === "notlogin") {
+                localStorage.setItem("redirect_message", "login_required");
+                window.location.href = "/";
+            }
+            });
+
+        </script>
+    </body>
+    </html>

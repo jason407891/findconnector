@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINDCONNECTOR</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
+    <meta charset="utf-8">
+</head>
+
+<body class="body">
+    <div class="header">
+        </div>
+    <div class="middle">
+            <div class="category">產品分類</div>  <!--從資料庫裡面去獲得數據-->
+            <div class="banner">
+                <div class="banner-container">
+                    <img src=https://findconnector.s3.ap-southeast-2.amazonaws.com/banner1.jpg class="banner_img"></img>
+                    <img src=https://findconnector.s3.ap-southeast-2.amazonaws.com/banner2.jpg class="banner_img"></img>
+                    <img src=https://findconnector.s3.ap-southeast-2.amazonaws.com/banner3.jpg class="banner_img"></img>
+                    <img src=https://findconnector.s3.ap-southeast-2.amazonaws.com/banner4.jpg class="banner_img"></img>
+                </div>
+                <img src="../static/leftbtn.png" class="banner_left"></img>
+                <img src="../static/rightbtn.png" class="banner_right"></img>
+            </div>
+    </div>
+    <div class="partner">
+            <div class="partnerlist">合作夥伴</div>
+            <div class="partnerlogo">
+                <div class="logo-container">
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/apple.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/lemon.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/pineapple.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/passion-fruit.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/kiwi.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/mango.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/pomegranate.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/bananas.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/grapes.png" class="logoimg"></img>
+                    <img src="https://findconnector.s3.ap-southeast-2.amazonaws.com/cherries.png" class="logoimg"></img>
+                </div>
+
+                <img src="../static/leftbtn.png" class="logo_left"></img>
+                <img src="../static/rightbtn.png" class="logo_right"></img>
+            </div> <!--從資料庫裡面去獲得數據-->
+    </div>
+    <div class="footer">
+            <!--FOOTER
+            <div class="about">關於我們</div>
+            <div class="faq">常見問題</div>
+            <div class="contact">聯繫我們</div>
+            -->
+    </div>
+
+    
+
+    <div class="account">
+        <!--註冊及登入的表單
+        <div class="signup_block">
+            <form class="signup">
+                <div class="deco_bar"></div>
+                <div class="signup_text">註冊會員帳號</div>
+                <img src="../static/close.png" class="close_button" onclick="handle_account('close')"></img>
+                <input class="register_input" name="name" placeholder="會員姓名">
+                <input class="register_input" name="email" placeholder="電子郵件">
+                <input class="register_input" name="password" placeholder="密碼" type="password">
+                <input class="register_input" name="company_name" placeholder="公司名稱">
+                <input class="register_input" name="phone_number" placeholder="聯繫電話">
+                <input class="register_input" name="address" placeholder="倉庫地址">
+                <input class="submit_btn" onclick="register()" value="註冊新帳戶">
+                <div class="signup_link"><span id="have_account">已經有帳戶了？</span><span onclick="handle_account('login')">點此登入</span></div>
+            </form>
+        </div>
+        <div class="login_block">
+            <div class="login">
+                <div class="deco_bar"></div>
+                <div class="login_text">登入會員帳號</div>
+                <img src="../static/close.png" class="close_button" onclick="handle_account('close')"></img>
+                <input class="login_input" placeholder="輸入電子信箱">
+                <input class="login_input" placeholder="輸入密碼" type="password">
+                <input class="submit_btn" onclick="login()" value="登入帳戶">
+                <div class="login_link">還沒有帳戶？<span onclick="handle_account('register')">點此註冊</span></div>
+            </div>
+        </div>
+        -->
+    </div>
+<script src="{{url_for('static', filename='common.js') }}"></script>
+<script>
+    function handle_categories(){
+        let categories_container = document.getElementsByClassName("category")[0];
+        fetch("api/showcategories")
+        .then(response=>response.json())
+        .then(data=>{
+            let categories_elements=data;
+            categories_elements.forEach(
+                categories=>{
+                    let category_element = document.createElement("div");
+                    category_element.className="category_element";
+                    category_element.innerHTML=categories.categories_name;
+                    categories_container.appendChild(category_element);
+                }
+            )
+
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+    }
+
+    function handle_banners(){
+        let banner_container = document.getElementsByClassName("banner-container")[0]; //裝BANNER的容器
+        let left_btn=document.getElementsByClassName("banner_left")[0];
+        let right_btn=document.getElementsByClassName("banner_right")[0];
+
+        let scrollamount=700;
+
+        left_btn.addEventListener("click",()=>{
+            banner_container.scrollLeft -= scrollamount;
+            });
+
+        right_btn.addEventListener("click",()=>{
+            banner_container.scrollLeft += scrollamount;
+            });
+
+    }
+    function handle_logo(){
+        let logo_container = document.getElementsByClassName("logo-container")[0]; //裝BANNER的容器
+        let left_btn=document.getElementsByClassName("logo_left")[0];
+        let right_btn=document.getElementsByClassName("logo_right")[0];
+
+        let scrollamount=50;
+
+        left_btn.addEventListener("click",()=>{
+            logo_container.scrollLeft -= scrollamount;
+            });
+
+        right_btn.addEventListener("click",()=>{
+            logo_container.scrollLeft += scrollamount;
+            });
+
+    }
+    
+
+    window.addEventListener("load", () => {
+    let message = localStorage.getItem("redirect_message");
+    if (message === "login_required") {
+        Swal.fire('進入頁面失敗', '請先登入後再使用上傳功能', 'error');
+        localStorage.removeItem("redirect_message");  // 清除避免重複顯示
+    }
+});
+
+
+    window.onload= function(){
+        handle_categories();  //網頁載入時抓取categories資料
+        handle_banners(); //網頁載入時抓取banner資料
+        handle_logo(); //網頁載入時抓取logo資料
+    }
+</script>
+
+</body>
+</html>

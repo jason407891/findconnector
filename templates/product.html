@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FINDCONNECTOR</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='product.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div class="header">
+        </div>
+        <div class="factorystock_title">{{partnumber}}<span>工廠價格和庫存</span></div>
+        <div class="factorystock_area">
+            <!--
+            <div class="factorystock_container">
+                <div class="factorystock_column">
+                    <div class="factorystock_image">產品圖片</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>更新日期</div>
+                    <div>2025-04-17</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>產品編號</div>
+                    <div>39000038</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造商</div>
+                    <div>MOLEX</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造日期</div>
+                    <div>2023</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>庫存數量</div>
+                    <div>20000</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>倉庫地點</div>
+                    <div>新北市</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>聯繫窗口</div>
+                    <div>jason407891@gmail.com</div>
+                </div>
+            </div>
+            <div class="factorystock_container">
+                <div class="factorystock_column">
+                    <div class="factorystock_image">產品圖片</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>更新日期</div>
+                    <div>2025-04-17</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>產品編號</div>
+                    <div>39000038</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造商</div>
+                    <div>MOLEX</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造日期</div>
+                    <div>2023</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>庫存數量</div>
+                    <div>20000</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>倉庫地點</div>
+                    <div>新北市</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>聯繫窗口</div>
+                    <div>jason407891@gmail.com</div>
+                </div>
+            </div>
+            <div class="factorystock_container">
+                <div class="factorystock_column">
+                    <div class="factorystock_image">產品圖片</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>更新日期</div>
+                    <div>2025-04-17</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>產品編號</div>
+                    <div>39000038</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造商</div>
+                    <div>MOLEX</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造日期</div>
+                    <div>2023</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>庫存數量</div>
+                    <div>20000</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>倉庫地點</div>
+                    <div>新北市</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>聯繫窗口</div>
+                    <div>jason407891@gmail.com</div>
+                </div>
+            </div>
+            <div class="factorystock_container">
+                <div class="factorystock_column">
+                    <div class="factorystock_image">產品圖片</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>更新日期</div>
+                    <div>2025-04-17</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>產品編號</div>
+                    <div>39000038</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造商</div>
+                    <div>MOLEX</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>製造日期</div>
+                    <div>2023</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>庫存數量</div>
+                    <div>20000</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>倉庫地點</div>
+                    <div>新北市</div>
+                </div>
+                <div class="factorystock_column">
+                    <div>聯繫窗口</div>
+                    <div>jason407891@gmail.com</div>
+                </div>
+            </div>
+            -->
+        </div>
+
+        <!-- 代理商庫存
+        <div class="agent_title">{{partnumber}}<span>代理商庫存</span></div>
+        <div class="agentstock_area">
+        <div class="agent_container">
+            <div class="agent_column">
+                <div>產品編號</div>
+                <div>39000038</div>
+            </div>
+            <div class="agent_column">
+                <div>製造商</div>
+                <div>MOLEX</div>
+            </div>
+            <div class="agent_column">
+                <div>庫存數量</div>
+                <div>10000</div>
+            </div>
+            <div class="agent_column">
+                <div>供應商</div>
+                <div>MOUSER</div>
+            </div>
+            <div class="agent_column">
+                <div>數量</div>
+                <div>4000</div>
+            </div>
+            <div class="agent_column">
+                <div>價格</div>
+                <div>1.3</div>
+            </div>
+        </div>
+        <div class="agent_container">
+            <div class="agent_column">
+                <div>產品編號</div>
+                <div>39000038</div>
+            </div>
+            <div class="agent_column">
+                <div>製造商</div>
+                <div>MOLEX</div>
+            </div>
+            <div class="agent_column">
+                <div>庫存數量</div>
+                <div>10000</div>
+            </div>
+            <div class="agent_column">
+                <div>供應商</div>
+                <div>MOUSER</div>
+            </div>
+            <div class="agent_column">
+                <div>數量</div>
+                <div>4000</div>
+            </div>
+            <div class="agent_column">
+                <div>價格</div>
+                <div>1.3</div>
+            </div>
+        </div>
+        <div class="agent_container">
+            <div class="agent_column">
+                <div>產品編號</div>
+                <div>39000038</div>
+            </div>
+            <div class="agent_column">
+                <div>製造商</div>
+                <div>MOLEX</div>
+            </div>
+            <div class="agent_column">
+                <div>庫存數量</div>
+                <div>10000</div>
+            </div>
+            <div class="agent_column">
+                <div>供應商</div>
+                <div>MOUSER</div>
+            </div>
+            <div class="agent_column">
+                <div>數量</div>
+                <div>4000</div>
+            </div>
+            <div class="agent_column">
+                <div>價格</div>
+                <div>1.3</div>
+            </div>
+        </div>
+        <div class="agent_container">
+            <div class="agent_column">
+                <div>產品編號</div>
+                <div>39000038</div>
+            </div>
+            <div class="agent_column">
+                <div>製造商</div>
+                <div>MOLEX</div>
+            </div>
+            <div class="agent_column">
+                <div>庫存數量</div>
+                <div>10000</div>
+            </div>
+            <div class="agent_column">
+                <div>供應商</div>
+                <div>MOUSER</div>
+            </div>
+            <div class="agent_column">
+                <div>數量</div>
+                <div>4000</div>
+            </div>
+            <div class="agent_column">
+                <div>價格</div>
+                <div>1.3</div>
+            </div>
+        </div>
+        <div class="agent_container">
+            <div class="agent_column">
+                <div>產品編號</div>
+                <div>39000038</div>
+            </div>
+            <div class="agent_column">
+                <div>製造商</div>
+                <div>MOLEX</div>
+            </div>
+            <div class="agent_column">
+                <div>庫存數量</div>
+                <div>10000</div>
+            </div>
+            <div class="agent_column">
+                <div>供應商</div>
+                <div>MOUSER</div>
+            </div>
+            <div class="agent_column">
+                <div>數量</div>
+                <div>4000</div>
+            </div>
+            <div class="agent_column">
+                <div>價格</div>
+                <div>1.3</div>
+            </div>
+        </div>
+        <div class="agent_container">
+            <div class="agent_column">
+                <div>產品編號</div>
+                <div>39000038</div>
+            </div>
+            <div class="agent_column">
+                <div>製造商</div>
+                <div>MOLEX</div>
+            </div>
+            <div class="agent_column">
+                <div>庫存數量</div>
+                <div>10000</div>
+            </div>
+            <div class="agent_column">
+                <div>供應商</div>
+                <div>MOUSER</div>
+            </div>
+            <div class="agent_column">
+                <div>數量</div>
+                <div>4000</div>
+            </div>
+            <div class="agent_column">
+                <div>價格</div>
+                <div>1.3</div>
+            </div>
+        </div>
+        </div>
+        -->
+
+        <div class="footer">
+        </div>
+        <div class="account">
+        </div>
+        <script src="{{url_for('static', filename='common.js') }}"></script>
+        <script>
+            function searchproduct(keyword){
+                fetch('/api/search/'+keyword, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let displayarea=document.querySelector(".factorystock_area");
+                    console.log(data)
+                    data.forEach(product=>{
+                        let displayitem=document.createElement("div");
+                        displayitem.className="factorystock_container";
+                        if (product.product_img==null){
+                            product.product_img="https://findconnector.s3.ap-southeast-2.amazonaws.com/apple.png"
+                        }
+                        displayitem.innerHTML=`
+                        <div class="factorystock_container">
+                            <div class="factorystock_column">
+                                <img src="${product.product_img}" class="factorystock_image"></img>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>更新日期</div>
+                                <div>${product.update_time}</div>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>產品編號</div>
+                                <div>${product.partnumber}</div>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>製造商</div>
+                                <div>${product.brand}</div>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>製造日期</div>
+                                <div>${product.dc}</div>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>庫存數量</div>
+                                <div>${product.qty}</div>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>倉庫地點</div>
+                                <div>${product.warehouse_address}</div>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>產品單價</div>
+                                <div>${product.price}</div>
+                            </div>
+                            <div class="factorystock_column">
+                                <div>聯繫窗口</div>
+                                <div>${product.upload_user}</div>
+                            </div>
+                        </div>
+                        `;
+                        displayarea.appendChild(displayitem);
+                    })
+                })
+                .catch(error => console.log(error));
+            }
+            window.addEventListener("load", ()=>{
+                let keyword = "{{partnumber}}";
+                searchproduct(keyword);
+            });
+
+             
+        </script>
+    </body>
+    </html>

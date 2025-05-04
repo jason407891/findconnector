@@ -1,0 +1,131 @@
+.middle{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:50px;
+    margin-bottom:50px;
+}
+
+.category{
+    width:300px;
+    height:460px;
+    display: flex;
+    flex-direction: column; /*可以讓裡面的元素垂直排列*/
+    align-items: center;
+    justify-content: flex-start;
+    background-color: antiquewhite;
+    padding:20px;
+
+}
+.category_element{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.banner{
+    margin:20px;
+    height:500px;
+    width:700px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    position:relative; /*讓子元素用決定定位*/
+    overflow: hidden;
+}
+
+.banner-container{
+    display:flex;
+    align-items: center;
+    justify-content: start;
+    height:500px;
+    width:9999px;
+    overflow: hidden;
+    scroll-behavior: smooth;
+}
+.banner_img{
+    width:100%;
+    height:500px;
+    object-fit: cover;
+}
+.banner_right {
+  position: absolute;   
+  top: 50%;
+  transform: translateY(-50%);             
+  width: 30px;          
+  height: 30px;
+  cursor: pointer; 
+  right:30px    
+}
+.banner_left {
+    position: absolute;  /*定位按鈕*/
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;          
+    height: 30px;
+    cursor: pointer;   
+    left:30px;  
+  }
+.partner{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:  20px;
+    background-color: #F5F5F5;
+    width:100%;
+}
+.partnerlist{
+    background-color: #D0C3B1;
+    width:150px;
+    height: 220px;
+    display:flex;
+    align-items: center;
+    text-align: center;
+    padding-left: 30px;
+    margin: 30px;
+    margin-right: 0px;
+}
+.partnerlogo{
+    height:220px;
+    width:600px;
+    background-color: white;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.logoimg{
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
+.logo_left{
+    position: absolute;  /*定位按鈕*/
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;          
+    height: 30px;
+    cursor: pointer;   
+    left:10px;  
+}
+.logo_right{
+    position: absolute;  /*定位按鈕*/
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;          
+    height: 30px;
+    cursor: pointer;   
+    right:10px; 
+}
+.category_element{
+    width:100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+.logo-container{
+    width:9999px;
+    display:flex;
+    align-items: center;
+    justify-content: start;
+    overflow: hidden;
+    scroll-behavior: smooth;
+}

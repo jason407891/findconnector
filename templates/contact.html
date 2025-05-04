@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FINDCONNECTOR</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='contact.css') }}"/>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div class="header">
+        </div>
+        <div class="contactus">
+            <div class="intro">
+                <div>窗口: 林先生</div>
+                <div>信箱: jason407891@gmail.com</div>
+                <div>電話: 0920611135</div>
+            </div>
+            <div class="advicearea">
+                <form action="/sendmsg" method="POST" class="advice">
+                    <!--用TETXTAREA輸入，因為INPUT是輸入單行文字-->
+                    <textarea class="advice" placeholder="問題描述或是任何建議:"></textarea>
+                    <div class="submit" type="submit">送出</div>
+                </form>
+            </div>
+        </div>
+        <div class="footer">
+        </div>
+        <div class="account">
+        </div>
+        <script src="{{url_for('static', filename='common.js') }}"></script>
+    </body>
+    </html>

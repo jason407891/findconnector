@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FINDCONNECTOR</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='faq.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div class="header">
+        </div>
+        <div class="faqtitle">常見問題</div>
+        <div class="faqarea">
+            <div class="qa">
+                <div class="question">Q: 這是什麼網站?</div>
+                <div class="answer">A: 這是一個提供電子零件庫存共享，以及查詢代理商庫存與價格的網站</div>
+            </div>
+            <div class="qa">
+                <div class="question">Q: 如何搜尋產品</div>
+                <div class="answer">A: 輸入產品編號後搜尋即可，如果有指定數量中間可以用空格隔開</div>
+            </div>
+            <div class="qa">
+                <div class="question">Q: 如何上傳自有庫存</div>
+                <div class="answer">A: 註冊帳號後，可以於上傳庫存的頁面上傳</div>
+            </div>
+            <div class="qa">
+                <div class="question">Q:上傳庫存時如果有兩筆重複的產品編號，會發生什麼事情?</div>
+                <div class="answer">A: 後面上傳的產品庫存數量會覆蓋前者的資料</div>
+            </div>
+            <div class="qa">
+                <div class="question">Q:如何使用BOM服務?</div>
+                <div class="answer">A: 下載範例後，填寫資料上傳，並點選進行配對即可</div>
+            </div>
+        </div>
+        <div class="footer">
+        </div>
+        <div class="account">
+        </div>
+        
+        <script src="{{url_for('static', filename='common.js') }}"></script>
+    </body>
+    </html>

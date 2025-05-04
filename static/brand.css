@@ -1,0 +1,31 @@
+.brandlist{
+    margin:20px;
+    font: 18px "Noto Sans TC";
+    color:#FF781C;
+    text-align: center;
+}
+
+.brandjump{
+    text-align: center;
+    letter-spacing: 15px; /*讓每個字母中間都有間隔*/
+    font-size:18px;
+    margin:20px;
+}
+.alphabet{
+    font-size:18px;
+    margin-left:50px;
+    text-align: start;
+}
+.brandarea{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:20px;
+    background-color: #EDEAEA;
+    border-radius: 8px;
+    flex-wrap:wrap;  /*子元素超過會自動換行*/
+}
+.brandarea div{
+    width:100px;
+    margin:10px;
+}

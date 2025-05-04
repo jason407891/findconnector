@@ -1,0 +1,39 @@
+.contactus{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:80px;
+    height: 500px;
+    background-color: #D0C3B1;
+}
+.intro{
+    width:50%;
+}
+.intro div{
+    margin-left: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.advicearea{
+    width:50%;
+}
+.advice{
+    display:flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding:5px;
+    width:90%;
+    height:200px;
+}
+.submit{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFA500;
+    color:white;
+    border-radius: 8px;
+    width:100px;
+    height:40px;
+    cursor: pointer;
+    margin:5px;
+}

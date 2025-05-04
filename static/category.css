@@ -1,0 +1,37 @@
+.category_title{
+    margin:20px;
+    font-size: 24px;
+    text-align: center;
+    color: #FF781C;
+}
+.category_image{
+    width:50px;
+    height:50px;
+    font-size:12px;
+    display:flex;
+    text-align: center;
+    align-items: center;
+    border: black 1px solid;
+}
+.category_container{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:20px;
+    background-color: #EDEAEA;
+    border-radius: 8px;
+}
+.category_column{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /*可以讓裡面的元素垂直排列*/
+    margin-top:20px;    
+    margin-bottom: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+.category_column div{
+    margin-top:5px;
+    margin-bottom: 5px;
+}

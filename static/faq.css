@@ -1,0 +1,24 @@
+.faqtitle{
+    font-size: 28px;
+    text-align: center;
+    margin: 20px;
+    color: #FF781C;
+}
+.faqarea{
+    display:flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    margin:30px;
+}
+.qa{
+    margin:20px;
+    background-color: #EDEAEA;
+    width:80%;
+    padding:30px;
+
+}
+
+.question{
+    margin-bottom:20px;
+}
