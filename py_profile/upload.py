@@ -15,7 +15,7 @@ def upload_many(profile,upload_user,warehouse_address,time):
         partnumber, brand, dc, qty, price, category, description
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE 
-        brand = VALUES(brand),
+        price = VALUES(price),
         qty = VALUES(qty)
     """
     insert_data=[(upload_user,warehouse_address,time,*row) for row in data]
