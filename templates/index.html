@@ -147,8 +147,23 @@
         Swal.fire('進入頁面失敗', '請先登入後再使用上傳功能', 'error');
         localStorage.removeItem("redirect_message"); // 清除避免重複顯示
     }
-    
-});
+    });
+
+    window.addEventListener("load", () => {
+    fetch("api/contact",{
+        method:"POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            "content":"有人進入網頁瀏覽"
+        })
+    })
+    .then(response=>response.json())
+    .catch(error=>{
+        console.log(error);
+    })
+    });
 
 
 
