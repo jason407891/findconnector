@@ -20,7 +20,7 @@ function loadHeaderFooter(){
             <div class="search_select">
                 <div class="checkboxes">
                     <label><input type="checkbox" class="factory_stock">工廠庫存</label>
-                    <label><input type="checkbox" class="agent_stock">代理商庫存</label>
+                    <label><input type="checkbox" class="agent_stock">代理商庫存(開發中)</label>
                 </div> 
             </div>
         </div>
@@ -282,7 +282,7 @@ function search(){
         Swal.fire('查詢失敗','請填寫搜尋欄位','error');
         return;
     }
-    window.location.href="/search/"+search_input;
+    window.location.href="/search/"+search_input+"?page=1";
 }
 
 function enter_search(event){

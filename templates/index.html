@@ -145,9 +145,11 @@
     let message = localStorage.getItem("redirect_message");
     if (message === "login_required") {
         Swal.fire('進入頁面失敗', '請先登入後再使用上傳功能', 'error');
-        localStorage.removeItem("redirect_message");  // 清除避免重複顯示
+        localStorage.removeItem("redirect_message"); // 清除避免重複顯示
     }
+    
 });
+
 
 
     window.onload= function(){

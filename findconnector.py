@@ -1,17 +1,16 @@
 from flask import *
-import mysql.connector
 import jwt
 from jwt.exceptions import DecodeError
 from datetime import datetime, date
-import mysql.connector
 import requests
-from mysql.connector import pooling
 import os
-from dotenv import load_dotenv #載入環境
 from py_profile.s3 import insert_file_s3
-from py_profile.upload import upload_many
-from py_profile.db import connection_pool
+from dotenv import load_dotenv #載入環境
+import os
+import pandas as pd
+from mysql.connector import pooling
 load_dotenv()
+
 
 app=Flask(__name__)
 app.config["JSON_AS_ASCII"]=False
@@ -21,7 +20,20 @@ app.config["JSONIFY_MIMETYPE"] = 'application/json; charset=utf-8'
 app.config ['JSON_SORT_KEYS'] = False
 
 
+dbconfig = {
+    "pool_name": "mypool",
+    "pool_size": 10,
+    "host": os.getenv("DB_HOST"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME"),
+    "port": 3306,
+    "charset": "utf8mb4",
+    "collation":"utf8mb4_general_ci"
+}
 
+# 創建 MySQL 連接池
+connection_pool = pooling.MySQLConnectionPool(**dbconfig)
 
 @app.route("/")
 def index():
@@ -78,8 +90,6 @@ def showcategories():
 #註冊
 @app.route("/api/user",methods=["POST"])
 def api_register():
-    connection=None
-    cursor=None
     try:
         connection = connection_pool.get_connection()
         data=request.get_json()
@@ -113,9 +123,8 @@ def api_register():
 #登入/驗證
 @app.route("/api/user/auth",methods=["PUT","GET"])
 def api_login():
-    connection=None
-    cursor=None
     connection = connection_pool.get_connection()
+    cursor = None
     try:
         if request.method == "PUT":
             data = request.get_json()
@@ -124,7 +133,6 @@ def api_login():
             cursor = connection.cursor()
             cursor.execute("SELECT id, user_name, user_email, warehouse_address FROM users WHERE user_email = %s AND user_password = %s", (email, password))
             user = cursor.fetchone()
-            cursor.close()
             if user:
                 user_info = {
                     "user_id": user[0],
@@ -157,8 +165,6 @@ def api_login():
 #上傳單筆產品
 @app.route("/api/uploadone",methods=["POST"])
 def api_uploadone():
-    connection=None
-    cursor=None
     connection = connection_pool.get_connection()
     try:
         #取得登入者資料
@@ -179,11 +185,14 @@ def api_uploadone():
         price=request.form.get("price")
         #取得照片資料
         getimg=request.files['product_img'] ##前端需設置INPUT的name為product_img type=file!
-        product_img = insert_file_s3(time.strftime("%H:%M:%S"),user_id,partnumber,getimg) ##上傳圖片到S3並取得圖片網址
+        if getimg:
+            product_img = insert_file_s3(time.strftime("%H:%M:%S"),user_id,partnumber,getimg) ##上傳圖片到S3並取得圖片網址
+        else:
+            product_img=None
         yearmonthday=time.strftime("%Y-%m-%d")
         #上傳到RDS資料庫
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO products (upload_user, product_img,update_time,partnumber,brand, dc, qty,warehouse_address,price,category,description) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (upload_user,product_img,yearmonthday,partnumber,brand, dc, qty, warehouse_address, price,category,description))
+        cursor.execute("INSERT INTO products (upload_user, product_img,update_time,partnumber,brand, dc, qty,warehouse_address,price,category,description) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ", (upload_user,product_img,yearmonthday,partnumber,brand, dc, qty, warehouse_address, price,category,description))
         connection.commit()
         return jsonify({"ok": True}), 200
     except Exception as e:
@@ -197,8 +206,6 @@ def api_uploadone():
 #編輯產品
 @app.route("/api/editproduct",methods=["PUT"])
 def api_editproduct():
-    connection=None
-    cursor=None
     connection = connection_pool.get_connection()
     try:
         #取得登入者資料
@@ -233,9 +240,8 @@ def api_editproduct():
 #刪除上傳紀錄
 @app.route("/api/deleteproduct",methods=["DELETE"])
 def api_deleteproduct():
-    connection=None
-    cursor=None
     connection = connection_pool.get_connection()
+    cursor = None
     try:
         #取得登入者資料
         token=request.headers.get("Authorization")
@@ -265,12 +271,25 @@ def api_deleteproduct():
 #搜尋產品
 @app.route("/api/search/<product>",methods=["GET"])
 def api_search(product):
-    connection=None
-    cursor=None
+    cursor = None
     connection = connection_pool.get_connection()
+    #取得產品頁數
+    try:
+        page = int(request.args.get("page", 1))
+        if page < 1:
+            page = 1
+    except (ValueError, TypeError):
+        page = 1
+
+    #1頁=10筆資料
+    offset=(page-1)*10
     try:
         cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM products WHERE partnumber LIKE %s",("%"+product+"%",))
+        cursor.execute("""
+                       SELECT * FROM products 
+                       WHERE partnumber LIKE %s
+                       LIMIT 10 OFFSET %s
+                       """,("%"+product+"%",offset))
         products = cursor.fetchall()
         #將日期轉換為字串，只有年月日
         for product in products:
@@ -288,8 +307,6 @@ def api_search(product):
 #搜尋上傳歷史紀錄
 @app.route("/api/uploadhistory",methods=["GET"])
 def api_uploadhistory():
-    connection=None
-    cursor=None
     connection = connection_pool.get_connection()
     #取得登入者資料
     token=request.headers.get("Authorization")
@@ -298,7 +315,7 @@ def api_uploadhistory():
     upload_user=user_info["user_email"]
     try:
         cursor = connection.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM products WHERE upload_user=%s",(upload_user,))
+        cursor.execute("SELECT * FROM products WHERE upload_user=%s ORDER BY update_time DESC",(upload_user,))
         products = cursor.fetchall()
         #將日期轉換為字串，只有年月日
         for product in products:
@@ -335,8 +352,6 @@ def api_batchupload():
 #製造商
 @app.route("/api/manufacturer",methods=["GET"])
 def api_allmfr():
-    connection=None
-    cursor=None
     connection = connection_pool.get_connection()
     try:
         cursor = connection.cursor(dictionary=True)
@@ -364,6 +379,56 @@ def api_sendmsg():
         return jsonify({"message": "feedback send successfully"}),200
     except Exception as e:
 	    return jsonify({"message": "fail to give feedback "+str(e)}),500
+
+
+#一次上傳多個檔案
+def upload_many(profile,upload_user,warehouse_address,time):
+    df = pd.read_excel(profile)
+    #column=df.columns.tolist()
+    data = df.values.tolist()
+    upload_user=upload_user
+    warehouse_address=warehouse_address
+    time=time
+    query="""
+    INSERT INTO products (
+        upload_user, warehouse_address, update_time, 
+        partnumber, brand, dc, qty, price, category, description
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE 
+        price = VALUES(price),
+        qty = VALUES(qty)
+    """
+
+    insert_data=[(upload_user,warehouse_address,time,*row) for row in data]
+    
+
+    connection = None
+    cursor = None
+    #插入數據
+    try:
+        connection = connection_pool.get_connection()
+        cursor=connection.cursor()
+        cursor.executemany(query, insert_data)
+        connection.commit()
+    except Exception as e:
+        print(e)
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.run(host="0.0.0.0", port=3000)

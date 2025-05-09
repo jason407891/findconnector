@@ -16,7 +16,7 @@
         </div>
         <div class="upload_history">
             <div class="upload_record">
-                <div class="upload_record_title" onclick="showhistory()">查看上傳記錄</div>
+                <div class="upload_record_title">上傳記錄</div>
                 <!--
                 <div class="upload_container">
                         <div class="content">
@@ -81,15 +81,15 @@
                 <div class="formcontent">
                     <div class="contentrow">
                         <div class="formcontenttext">製造商</div>
-                        <input class="forminput" name="brand">
+                        <input class="forminput" name="brand" required>
                     </div>
                     <div class="contentrow">
                         <div class="formcontenttext">產品編號</div>
-                        <input class="forminput" name="partnumber">
+                        <input type="text" class="forminput" name="partnumber" required>
                     </div>
                     <div class="contentrow">
                         <div class="formcontenttext">庫存數量</div>
-                        <input class="forminput" name="quantity">  
+                        <input type="number" class="forminput" name="quantity" required>  
                     </div>
                     <div class="contentrow">
                         <div class="formcontenttext">製造日期</div>
@@ -112,7 +112,7 @@
                         <input class="forminput" type="file" name="product_img">
                     </div>      
                 </div>
-                <div class="formsubmit" onclick="upload_single()">上傳</div>
+                <button class="formsubmit" type="submit">上傳</button>
             </form>
             <form class="upload_form_many" enctype="multipart/form-data">
                 <div class="formbar"></div>
@@ -127,7 +127,31 @@
                         <input class="forminput" type="file" name="uploadfile" accept=".xlsx, .xls" required>
                     </div>
                 </div>
-                <div class="formsubmit" onclick="upload_many()">上傳</div>
+                <button class="formsubmit">上傳</button>
+            </form>
+            <form class="edit_single">
+                <div class="formbar"></div>
+                <div class="formtitle">編輯單筆庫存資料</div>
+                <img src="../static/close.png" class="closeuploadimg" onclick="handle_upload('close')"></img>
+                <div class="formcontent">
+                    <div class="contentrow">
+                        <div class="formcontenttext">製造商</div>
+                        <div class="forminput" name="brand"></div>
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">產品編號</div>
+                        <div type="text" class="forminput" name="partnumber"></div>
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">庫存數量</div>
+                        <input type="number" class="forminput" name="quantity" required>  
+                    </div>
+                    <div class="contentrow">
+                        <div class="formcontenttext">產品價格</div>
+                        <input class="forminput" name="price" placeholder="NT$">
+                    </div>    
+                </div>
+                <button class="formsubmit" type="submit">修改</button>
             </form>
         </div>
         <script src="{{url_for('static', filename='common.js') }}"></script>
@@ -135,18 +159,42 @@
             function handle_upload(type){
                 let upload_one = document.getElementsByClassName("upload_form_single")[0];
                 let upload_many = document.getElementsByClassName("upload_form_many")[0];
+                let edit_single = document.getElementsByClassName("edit_single")[0];
                 let close_form= document.getElementsByClassName("closeuploadimg")[0];
                 if(type == "one"){
                     upload_one.style.display="flex";
                     upload_many.style.display="none";
+                    edit_single.style.display="none";
                 }else if(type == "many"){
                     upload_many.style.display="flex";
                     upload_one.style.display="none";
+                    edit_single.style.display="none";
+                }else if(type=="edit"){
+                    upload_many.style.display="none";
+                    upload_one.style.display="none";
+                    edit_single.style.display="flex";
                 }else if(type == "close"){
                     upload_one.style.display="none";
                     upload_many.style.display="none";
+                    edit_single.style.display="none";
                 }
+                
             }
+
+            //顯示編輯產品表單
+            function handle_edit(pn,brand){
+                let edit_single = document.getElementsByClassName("edit_single")[0];
+                edit_single.style.display="flex";
+                //顯示產品編號跟製造商
+                document.querySelectorAll(".edit_single .forminput")[0].innerHTML=brand;
+                document.querySelectorAll(".edit_single .forminput")[1].innerHTML=pn;
+            }
+
+
+
+            //送出編輯產品表單
+
+
 
             //上傳一個產品
             function upload_single(){
@@ -163,14 +211,32 @@
                 .then(data=>{
                     if(data.error){
                         console.log(data.message);
+                        localStorage.setItem("redirect_message", "upload_duplicate");
+                        window.location.href = "/upload";
+                        
                     }else{
-                        Swal.fire('新增成功','已成功新增一筆庫存資料','success');
+                        localStorage.setItem("redirect_message", "upload_success");
+                        window.location.href = "/upload";
                     }
                 })
                 .catch(error=>console.log(error))
 
             }
 
+            //監聽上傳表單(ONE)
+            document.querySelector(".upload_form_single").addEventListener("submit",
+            function(e){
+                e.preventDefault();
+                if (this.checkValidity()) {
+                    upload_single();
+                } else {
+                    this.reportValidity();
+                    Swal.fire("上傳失敗","請填寫產品，製造商，數量等必要欄位","fail");
+
+                }
+            }
+            );
+            
             //上傳整個檔案的產品
             function upload_many(){
                 let formdata = new FormData(document.querySelector(".upload_form_many"));
@@ -187,11 +253,27 @@
                     if(data.error){
                         console.log(data.message);
                     }else{
-                        Swal.fire('新增成功','已成功新增多筆庫存資料','success');
+                        localStorage.setItem("redirect_message", "upload_success");
+                        window.location.href = "/upload";
                     }
                 })
                 .catch(error=>console.log(error))
             }
+
+
+            //監聽上傳表單(MANY)
+            document.querySelector(".upload_form_many").addEventListener("submit",
+            function(e){
+                e.preventDefault();
+                if (this.checkValidity()) {
+                    upload_many();
+                } else {
+                    this.reportValidity();
+                    Swal.fire("上傳失敗","請上傳檔案","fail");
+
+                }
+            }
+            );
 
 
             //列出歷史紀錄
@@ -229,18 +311,28 @@
                                 <div>${item.qty}</div>
                             </div>
                             <div class="content">
-                                <img src="../static/edit.png" class="editimg"></img>
+                                <img src="../static/edit.png" class="editimg" onclick="handle_edit('${item.partnumber}','${item.brand}')"></img>
                             </div>
                             <div class="content">
-                                <img src="../static/bin.png" class="deleteimg"></img>
+                                <img src="../static/bin.png" class="deleteimg" onclick="delete_product('${item.partnumber}')"></img>
                             </div>
                             `;
                             history.appendChild(history_element);
+                            
                     })
                 })
                 .catch(error=>console.log(error))
                 
             }
+
+
+
+            //頁面加載後顯示上傳紀錄
+            window.addEventListener("load", () => {
+                showhistory();
+            });
+
+
 
             //監聽登入狀況，還沒登入的人不能使用
             window.addEventListener("load", async () => {
@@ -251,6 +343,53 @@
             }
             });
 
+
+
+            //刪除單個產品紀錄
+            function delete_product(pn){
+                let token = localStorage.getItem("token");
+                fetch("/api/deleteproduct",{
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type": "application/json" 
+                    },
+                    body : JSON.stringify({
+                        "partnumber":pn
+                    })
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    if(data.error){
+                        console.log(data.message);
+                    }else{
+                        localStorage.setItem("redirect_message", "delete_success");
+                        window.location.href = "/upload";
+                    }
+                })
+                .catch(error=>console.log(error))
+            }
+
+            //產品異動成功後提示
+            window.addEventListener("load", () => {
+                let message = localStorage.getItem("redirect_message");
+                if(message === "delete_success") {
+                    Swal.fire('刪除產品成功', '您已成功刪除產品', 'success');
+                } else if(message === "edit_success") {
+                    Swal.fire('修改產品成功', '您已成功修改產品', 'success');
+                    
+                } else if(message === "upload_success") {
+                    Swal.fire('上傳產品成功', '您已成功新增產品', 'success');   
+                } else if(message==="upload_duplicate"){
+                    Swal.fire('上傳產品失敗', '產品編號重複，請重新上傳', 'error');
+                }
+                localStorage.removeItem("redirect_message"); // 清除避免重複顯示
+
+            });
+
+
+            
+        
         </script>
     </body>
     </html>

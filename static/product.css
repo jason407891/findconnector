@@ -77,3 +77,11 @@
     margin-top:5px;
     margin-bottom: 5px;
 }
+
+.loadmore{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:20px;
+    cursor: pointer;
+}

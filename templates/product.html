@@ -310,14 +310,21 @@
         </div>
         -->
 
+        <div class="loadmore">下一頁</div>
         <div class="footer">
         </div>
         <div class="account">
         </div>
         <script src="{{url_for('static', filename='common.js') }}"></script>
         <script>
-            function searchproduct(keyword){
-                fetch('/api/search/'+keyword, {
+
+            //看現在是第幾頁
+            let url = new URL(window.location.href);
+            let currentPage = parseInt(url.searchParams.get("page")) || 1;
+
+            let keyword = "{{partnumber}}";
+            function searchproduct(keyword, page){
+                fetch('/api/search/'+keyword+'?page='+page, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -326,12 +333,11 @@
                 .then(response => response.json())
                 .then(data => {
                     let displayarea=document.querySelector(".factorystock_area");
-                    console.log(data)
                     data.forEach(product=>{
                         let displayitem=document.createElement("div");
                         displayitem.className="factorystock_container";
                         if (product.product_img==null){
-                            product.product_img="https://findconnector.s3.ap-southeast-2.amazonaws.com/apple.png"
+                            product.product_img="https://findconnector.s3.ap-southeast-2.amazonaws.com/no-pictures.png"
                         }
                         displayitem.innerHTML=`
                         <div class="factorystock_container">
@@ -378,11 +384,18 @@
                 .catch(error => console.log(error));
             }
             window.addEventListener("load", ()=>{
-                let keyword = "{{partnumber}}";
-                searchproduct(keyword);
+                searchproduct(keyword,currentPage);
+                let keyword_display= document.querySelector(".search-bar");
+                keyword_display.value=keyword; //因為是input，所以要用VALUE，不能用INNERHTML
             });
 
-             
+            
+            //下一頁
+            document.querySelector(".loadmore").addEventListener("click", ()=>{
+                currentPage = currentPage + 1;
+                window.location.href="/search/"+keyword+"?page="+currentPage;
+            });
+
         </script>
     </body>
     </html>
