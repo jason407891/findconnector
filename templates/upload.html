@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
     <head>
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>FINDCONNECTOR</title>
+        <meta name="description" content="FINDCONNECTOR 业务数据上传 - 快速上传单笔或批量库存数据。支持Excel批量导入、阶梯价格设置及数据版本管理。">
+        <meta name="keywords" content="业务数据,上传业务,批量上传,Excel上传,业务管理">
+        <meta name="author" content="FINDCONNECTOR">
+        <meta name="robots" content="index, follow">
+        <title>FINDCONNECTOR - 业务数据上传管理</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='upload.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tiered_pricing.css') }}"/>
-        <meta charset="utf-8">
     </head>
     <body>
         <div class="header">
@@ -78,7 +82,7 @@
             <form class="upload_form_single">
                 <div class="formbar"></div>
                 <div class="formtitle">新增單筆庫存資料</div>
-                <img src="../static/close.png" class="closeuploadimg" onclick="handle_upload('close')"></img>
+                <img src="../static/close.png" alt="關閉" class="closeuploadimg" onclick="handle_upload('close')" width="20" height="20" />
                 <div class="formcontent">
                     <div class="contentrow">
                         <div class="formcontenttext">製造商</div>
@@ -155,7 +159,7 @@
             <form class="upload_form_many" enctype="multipart/form-data">
                 <div class="formbar"></div>
                 <div class="formtitle">批量上傳庫存資料</div>
-                <div class="formclose" onclick="handle_upload('close')"><img src="../static/close.png" class="closeuploadimg"></img></div>
+                <div class="formclose" onclick="handle_upload('close')"><img src="../static/close.png" alt="關閉" class="closeuploadimg" width="20" height="20" /></div>
                 <div class="formcontent">
                     <div class="contentrow">
                         <a href="./static/upload_example.xlsx" class="formcontenttext">下載範例</a>
@@ -173,7 +177,7 @@
             <form class="edit_single">
                 <div class="formbar"></div>
                 <div class="formtitle">編輯單筆庫存資料</div>
-                <img src="../static/close.png" class="closeuploadimg" onclick="handle_upload('close')"></img>
+                <img src="../static/close.png" alt="關閉" class="closeuploadimg" onclick="handle_upload('close')" width="20" height="20" />
                 <div class="formcontent">
                     <div class="contentrow">
                         <div class="formcontenttext">製造商</div>
@@ -554,10 +558,10 @@
                                 <div style="font-size: 12px; line-height: 1.6;">${priceDisplay}</div>
                             </div>
                             <div class="content">
-                                <img src="../static/edit.png" class="editimg" onclick="handle_edit('${item.partnumber}','${item.brand}','${item.dc}',${JSON.stringify(item.price).replace(/"/g, '\\"')})"></img>
+                                <img src="../static/edit.png" alt="编辑" class="editimg" onclick="handle_edit('${item.partnumber}','${item.brand}','${item.dc}',${JSON.stringify(item.price).replace(/"/g, '\\"')})" width="30" height="30" />
                             </div>
                             <div class="content">
-                                <img src="../static/bin.png" class="deleteimg" onclick="delete_product('${item.partnumber}','${item.dc}')"></img>
+                                <img src="../static/bin.png" alt="删除" class="deleteimg" onclick="delete_product('${item.partnumber}','${item.dc}')" width="30" height="30" />
                             </div>
                             `;
                             history.appendChild(history_element);

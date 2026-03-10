@@ -14,14 +14,22 @@
     align-items: center;
     justify-content: center;
     margin:20px;
-    background-color: #EDEAEA;
-    border-radius: 8px;
+    background-color: #F8F9FA;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 10px;
+    transition: all 0.3s ease;
 }
+
+.factorystock_container:hover {
+    box-shadow: 0 4px 12px rgba(255, 120, 28, 0.15);
+}
+
 .factorystock_column{
     display:flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column; /*可以讓裡面的元素垂直排列*/
+    flex-direction: column;
     margin-top:20px;    
     margin-bottom: 20px;
     margin-left: 10px;
@@ -33,13 +41,17 @@
     margin-top:5px;
     margin-bottom: 5px;
 }
+
 .factorystock_image{
     display:flex;
     justify-content: center;
     align-items: center;
     width:100px;
     height:100px;
-    border: black 1px solid;
+    border: none;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .agent_title{
@@ -58,8 +70,15 @@
     align-items: center;
     justify-content: center;
     margin:20px;
-    background-color: #EDEAEA;
-    border-radius: 8px;
+    background-color: #F8F9FA;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.agent_container:hover {
+    box-shadow: 0 4px 12px rgba(255, 120, 28, 0.15);
 }
 .agent_column{
     display:flex;

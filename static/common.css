@@ -36,8 +36,10 @@ hr{
 }
 .search_text{
     border-radius: 8px 0px 0px 8px;
-    background-color: #D9D9D9;
+    background-color: #FF781C;
+    color: white;
     font: 16px "Noto Sans TC";
+    font-weight: 600;
     height: 35px;
     width: 90px;
     display:flex;
@@ -53,14 +55,21 @@ hr{
     height: 35px;
     width: 230px;
     font-size: 12px;
-    background-color: #EDEAEA;
-    border: none;
-    padding: 0px;
+    background-color: #F8F9FA;
+    border: 1px solid #DDD;
+    padding: 0px 10px;
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: #FF781C;
+    box-shadow: 0 0 0 2px rgba(255, 120, 28, 0.1);
 }
 .search_btn{
     border-radius: 0px 8px 8px 0px;
-    background-color: orange;
+    background-color: #FF781C;
     font: 16px "Noto Sans TC";
     color:white;
     height: 35px;
@@ -69,6 +78,17 @@ hr{
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.search_btn:hover {
+    background-color: #E56B0F;
+    box-shadow: 0 2px 8px rgba(255, 120, 28, 0.3);
+}
+
+.search_btn:active {
+    transform: scale(0.98);
 }
 
 .checkboxes{
@@ -195,16 +215,35 @@ hr{
 .register_input{
     width:310px;
     height: 47px;
-    border-radius: 5px;
-    border: 1px solid #CCCCCC;
+    border-radius: 6px;
+    border: 1px solid #DDD;
     margin-top:10px;
+    padding: 10px;
+    font: 16px "Noto Sans TC";
+    transition: all 0.3s ease;
 }
+
+.register_input:focus {
+    outline: none;
+    border-color: #FF781C;
+    box-shadow: 0 0 0 2px rgba(255, 120, 28, 0.1);
+}
+
 .login_input{
     width:310px;
     height: 47px;
-    border-radius: 5px;
-    border: 1px solid #CCCCCC;
+    border-radius: 6px;
+    border: 1px solid #DDD;
     margin-top:10px;
+    padding: 10px;
+    font: 16px "Noto Sans TC";
+    transition: all 0.3s ease;
+}
+
+.login_input:focus {
+    outline: none;
+    border-color: #FF781C;
+    box-shadow: 0 0 0 2px rgba(255, 120, 28, 0.1);
 }
 .register_input::placeholder{
     font: 16px "Noto Sans TC";
@@ -218,11 +257,23 @@ hr{
     height: 47px;
     margin-top:10px;
     font: 19px "Noto Sans TC";
-    border-radius: 5px;
+    font-weight: 600;
+    border-radius: 6px;
     border: none;
-    background-color: #FFA500;
+    background-color: #FF781C;
     color:white;
     text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit_btn:hover {
+    background-color: #E56B0F;
+    box-shadow: 0 4px 12px rgba(255, 120, 28, 0.3);
+}
+
+.submit_btn:active {
+    transform: scale(0.98);
 }
 .login_link{
     width:310px;

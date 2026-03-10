@@ -6,34 +6,61 @@
 }
 
 .uploadone{
-    background-color: #ffa500;
+    background-color: #FF781C;
     width:150px;
     height: 40px;
     display:flex;
     align-items: center;
     text-align: center;
-    padding-left: 30px;
+    justify-content: center;
     margin: 30px;
     cursor: pointer;
     font: 16px "Noto Sans TC";
+    font-weight: 600;
     color: white;
     border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(255, 120, 28, 0.2);
+    transition: all 0.3s ease;
+}
+
+.uploadone:hover {
+    background-color: #E56B0F;
+    box-shadow: 0 4px 12px rgba(255, 120, 28, 0.3);
+    transform: translateY(-2px);
+}
+
+.uploadone:active {
+    transform: scale(0.98);
 }
 
 .uploadmany{
-    background-color: #ffa500;
+    background-color: #FF781C;
     width:150px;
     height: 40px;
     display:flex;
     align-items: center;
     text-align: center;
-    padding-left: 30px;
+    justify-content: center;
     margin: 30px;
     cursor: pointer;
     font: 16px "Noto Sans TC";
+    font-weight: 600;
     color: white;
     border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(255, 120, 28, 0.2);
+    transition: all 0.3s ease;
+}
 
+.uploadmany:hover {
+    background-color: #E56B0F;
+    box-shadow: 0 4px 12px rgba(255, 120, 28, 0.3);
+    transform: translateY(-2px);
+}
+
+.uploadmany:active {
+    transform: scale(0.98);
 }
 
 .upload_record{
@@ -45,7 +72,8 @@
 }
 
 .upload_record_title{
-    background-color: #D0C3B1;
+    background: linear-gradient(135deg, #FF781C 0%, #E56B0F 100%);
+    color: white;
     display:flex;
     align-items: center;
     justify-content: center;
@@ -53,7 +81,9 @@
     width: 150px;
     height: 60px;
     font: 16px "Noto Sans TC";
-    border-radius: 8px;
+    font-weight: 600;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(255, 120, 28, 0.2);
 }
 .upload_history{
     display:flex;
@@ -67,8 +97,15 @@
     align-items: center;
     justify-content: center;
     margin:20px;
-    background-color: #EDEAEA;
-    border-radius: 8px;
+    background-color: #F8F9FA;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.upload_container:hover {
+    box-shadow: 0 4px 12px rgba(255, 120, 28, 0.15);
 }
 .content{
     display:flex;
@@ -148,17 +185,41 @@
     cursor: pointer;
 }
 .formsubmit{
-    width:50px;
-    background-color: #ffa500;
+    width:100px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #FF781C 0%, #E56B0F 100%);
     color:white;
     cursor: pointer;
+    font: 16px "Noto Sans TC";
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
     display:flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
-}   
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 120, 28, 0.2);
+}
+
+.formsubmit:hover {
+    box-shadow: 0 4px 12px rgba(255, 120, 28, 0.3);
+    transform: translateY(-2px);
+}
+
 .forminput{
     width:200px;
+    padding: 8px 10px;
+    border: 1px solid #DDD;
+    border-radius: 6px;
+    font: 14px "Noto Sans TC";
+    transition: all 0.3s ease;
+}
+
+.forminput:focus {
+    outline: none;
+    border-color: #FF781C;
+    box-shadow: 0 0 0 2px rgba(255, 120, 28, 0.1);
 }
 .upload_form_many{
     position:absolute;
