@@ -85,3 +85,179 @@
     margin:20px;
     cursor: pointer;
 }
+
+/* 篩選工具欄樣式 */
+.filter_toolbar {
+    background-color: #EDEAEA;
+    border-radius: 8px;
+    margin: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter_section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.filter_section:last-child {
+    margin-bottom: 0;
+}
+
+.filter_group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter_group label {
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.filter_group input, 
+.filter_group select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+.filter_group input:focus, 
+.filter_group select:focus {
+    outline: none;
+    border-color: #FF781C;
+    box-shadow: 0 0 0 2px rgba(255, 120, 28, 0.1);
+}
+
+.filter_group select {
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.filter_group input[type="text"] {
+    min-width: 120px;
+}
+
+.filter_group input[type="number"] {
+    min-width: 100px;
+}
+
+.filter_button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #FF781C;
+    color: white;
+    margin-left: 10px;
+}
+
+.filter_button:hover {
+    background-color: #E56B0F;
+    box-shadow: 0 2px 8px rgba(255, 120, 28, 0.3);
+}
+
+.filter_button:active {
+    transform: scale(0.98);
+}
+
+.filter_button.reset_button {
+    background-color: #999;
+    margin-left: 5px;
+}
+
+.filter_button.reset_button:hover {
+    background-color: #777;
+    box-shadow: 0 2px 8px rgba(153, 153, 153, 0.3);
+}
+
+/* 響應式設計 - 平板和手機 */
+@media (max-width: 768px) {
+    .filter_toolbar {
+        padding: 15px;
+        margin: 15px;
+    }
+    
+    .filter_section {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .filter_group {
+        gap: 6px;
+        flex: 1 1 calc(50% - 5px);
+        min-width: 150px;
+    }
+    
+    .filter_group select {
+        min-width: unset;
+        width: 100%;
+    }
+    
+    .filter_group input[type="text"] {
+        min-width: unset;
+        width: 100%;
+    }
+    
+    .filter_group input[type="number"] {
+        min-width: unset;
+        width: 100%;
+    }
+    
+    .filter_button {
+        flex: 1 1 calc(50% - 5px);
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+    
+    .filter_button.reset_button {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter_toolbar {
+        padding: 12px;
+        margin: 10px;
+    }
+    
+    .filter_section {
+        gap: 8px;
+    }
+    
+    .filter_group {
+        flex: 1 1 100%;
+        min-width: unset;
+    }
+    
+    .filter_group label {
+        font-size: 12px;
+    }
+    
+    .filter_group input,
+    .filter_group select {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .filter_button {
+        font-size: 12px;
+        padding: 6px 15px;
+        margin-left: 0;
+    }
+    
+    .filter_button.reset_button {
+        margin-left: 0;
+    }
+}

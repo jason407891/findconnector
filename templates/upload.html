@@ -5,6 +5,7 @@
         <title>FINDCONNECTOR</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='upload.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tiered_pricing.css') }}"/>
         <meta charset="utf-8">
     </head>
     <body>
@@ -105,8 +106,45 @@
                     </div>
                     <div class="contentrow">
                         <div class="formcontenttext">產品價格</div>
-                        <input class="forminput" name="price" placeholder="NT$">
+                        <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                            <button type="button" class="price_toggle" onclick="togglePriceMode('single')" style="background-color: #FF781C; color: white; padding: 5px 15px; border: none; border-radius: 4px; cursor: pointer;">單一價格</button>
+                            <button type="button" class="price_toggle" onclick="togglePriceMode('tiered')" style="background-color: #ccc; color: #333; padding: 5px 15px; border: none; border-radius: 4px; cursor: pointer;">階梯價格</button>
+                        </div>
                     </div>
+                    
+                    <!-- 單一價格模式 -->
+                    <div id="singlePriceMode" class="contentrow">
+                        <div class="formcontenttext"></div>
+                        <input class="forminput" name="price" id="singlePrice" placeholder="如：150">
+                    </div>
+                    
+                    <!-- 階梯價格模式 (隱藏) -->
+                    <div id="tieredPriceMode" style="display: none;">
+                        <div class="contentrow">
+                            <div class="formcontenttext">1件 (PCS)</div>
+                            <input type="number" class="forminput" name="price_1" placeholder="如：150" step="0.01" min="0">
+                        </div>
+                        <div class="contentrow">
+                            <div class="formcontenttext">5件 (PCS)</div>
+                            <input type="number" class="forminput" name="price_5" placeholder="如：145" step="0.01" min="0">
+                        </div>
+                        <div class="contentrow">
+                            <div class="formcontenttext">10件 (PCS)</div>
+                            <input type="number" class="forminput" name="price_10" placeholder="如：140" step="0.01" min="0">
+                        </div>
+                        <div class="contentrow">
+                            <div class="formcontenttext">50件 (PCS)</div>
+                            <input type="number" class="forminput" name="price_50" placeholder="如：135" step="0.01" min="0">
+                        </div>
+                        <div class="contentrow">
+                            <div class="formcontenttext">100件 (PCS)</div>
+                            <input type="number" class="forminput" name="price_100" placeholder="如：130" step="0.01" min="0">
+                        </div>
+                        <div class="contentrow" style="background-color: #f0f0f0; padding: 10px; border-radius: 4px; font-size: 12px; color: #666;">
+                            提示：只需填入有價格的數量層級，系統會自動整理
+                        </div>
+                    </div>
+                    
                     <div class="contentrow">
                         <div class="formcontenttext">上傳圖片</div>
                         <input class="forminput" type="file" name="product_img">
@@ -121,6 +159,9 @@
                 <div class="formcontent">
                     <div class="contentrow">
                         <a href="./static/upload_example.xlsx" class="formcontenttext">下載範例</a>
+                    </div>
+                    <div class="contentrow" style="background-color: #f0f0f0; padding: 10px; border-radius: 4px; font-size: 12px;">
+                        <strong>支援階梯價格</strong>：可使用 <code>price</code> 列（單一價格）或 <code>price_1, price_5, price_10, price_50, price_100</code> 列（階梯價格）
                     </div>
                     <div class="contentrow">
                         <div class="formcontenttext">上傳檔案</div>
@@ -148,7 +189,7 @@
                     </div>
                     <div class="contentrow">
                         <div class="formcontenttext">產品價格</div>
-                        <input class="forminput" name="price" placeholder="NT$">
+                        <input class="forminput" name="price" placeholder="NT$" id="editPrice">
                     </div>    
                 </div>
                 <button class="formsubmit" type="submit">修改</button>
@@ -156,6 +197,71 @@
         </div>
         <script src="{{url_for('static', filename='common.js') }}"></script>
         <script>
+            // 切換價格模式
+            function togglePriceMode(mode) {
+                const singleMode = document.getElementById('singlePriceMode');
+                const tieredMode = document.getElementById('tieredPriceMode');
+                const buttons = document.querySelectorAll('.price_toggle');
+                
+                buttons.forEach(btn => {
+                    btn.style.backgroundColor = '#ccc';
+                    btn.style.color = '#333';
+                });
+                
+                if (mode === 'single') {
+                    singleMode.style.display = 'flex';
+                    tieredMode.style.display = 'none';
+                    buttons[0].style.backgroundColor = '#FF781C';
+                    buttons[0].style.color = 'white';
+                    // Clear tiered price inputs
+                    document.querySelectorAll('#tieredPriceMode input').forEach(input => input.value = '');
+                } else {
+                    singleMode.style.display = 'none';
+                    tieredMode.style.display = 'block';
+                    buttons[1].style.backgroundColor = '#FF781C';
+                    buttons[1].style.color = 'white';
+                    // Clear single price input
+                    document.getElementById('singlePrice').value = '';
+                }
+            }
+            
+            // 在提交表單前準備價格數據
+            document.querySelector('.upload_form_single').addEventListener('submit', function(e) {
+                const singlePrice = document.getElementById('singlePrice').value;
+                const tieredInputs = document.querySelectorAll('#tieredPriceMode input');
+                let hasTieredPrice = false;
+                
+                for (let input of tieredInputs) {
+                    if (input.value) {
+                        hasTieredPrice = true;
+                        break;
+                    }
+                }
+                
+                // 如果是階梯價格模式，組裝成JSON格式
+                if (hasTieredPrice && !singlePrice) {
+                    const tiers = [];
+                    tieredInputs.forEach(input => {
+                        if (input.value) {
+                            const qty = parseInt(input.name.replace('price_', ''));
+                            tiers.push({
+                                quantity: qty,
+                                price: parseFloat(input.value)
+                            });
+                        }
+                    });
+                    
+                    // 在提交前添加隱藏的price字段
+                    const priceField = document.createElement('input');
+                    priceField.type = 'hidden';
+                    priceField.name = 'price';
+                    priceField.value = JSON.stringify(tiers.sort((a, b) => a.quantity - b.quantity));
+                    this.appendChild(priceField);
+                    
+                    // 清除individual fields
+                    tieredInputs.forEach(input => input.name = '');
+                }
+            });
             function handle_upload(type){
                 let upload_one = document.getElementsByClassName("upload_form_single")[0];
                 let upload_many = document.getElementsByClassName("upload_form_many")[0];
@@ -182,17 +288,109 @@
             }
 
             //顯示編輯產品表單
-            function handle_edit(pn,brand){
+            function handle_edit(pn, brand, dc, priceData){
                 let edit_single = document.getElementsByClassName("edit_single")[0];
                 edit_single.style.display="flex";
-                //顯示產品編號跟製造商
-                document.querySelectorAll(".edit_single .forminput")[0].innerHTML=brand;
-                document.querySelectorAll(".edit_single .forminput")[1].innerHTML=pn;
+                
+                // 顯示產品編號和製造商
+                document.querySelectorAll(".edit_single .forminput")[0].innerHTML = brand;
+                document.querySelectorAll(".edit_single .forminput")[1].innerHTML = pn;
+                
+                // 存儲日期碼到隱藏字段或data屬性
+                edit_single.setAttribute('data-partnumber', pn);
+                edit_single.setAttribute('data-datecode', dc);
+                
+                // 設置價格顯示和編輯字段
+                const priceInput = document.getElementById('editPrice');
+                let displayPrice = '';
+                
+                // 嘗試解析價格數據
+                if (typeof priceData === 'string' && priceData) {
+                    try {
+                        const parsedPrice = JSON.parse(priceData.replace(/\\\"/g, '"'));
+                        if (Array.isArray(parsedPrice) && parsedPrice.length > 0) {
+                            displayPrice = parsedPrice.map(tier => 
+                                `${tier.quantity}pcs: NT$${tier.price}`
+                            ).join(' | ');
+                            priceInput.value = JSON.stringify(parsedPrice);
+                            priceInput.setAttribute('data-tiered', 'true');
+                        } else {
+                            priceInput.value = priceData;
+                        }
+                    } catch (e) {
+                        priceInput.value = priceData;
+                    }
+                } else {
+                    priceInput.value = priceData || '';
+                }
             }
 
 
 
             //送出編輯產品表單
+            function submit_edit_product() {
+                let token = localStorage.getItem("token");
+                let edit_single = document.getElementsByClassName("edit_single")[0];
+                let partnumber = edit_single.getAttribute('data-partnumber');
+                let datecode = edit_single.getAttribute('data-datecode');
+                let quantity = document.querySelectorAll(".edit_single input[name='quantity']")[0].value;
+                let price = document.getElementById('editPrice').value;
+                
+                // 嘗試解析價格
+                let priceData = price;
+                try {
+                    // 如果看起來像JSON，解析它
+                    if (price.startsWith('[')) {
+                        priceData = JSON.parse(price);
+                    } else {
+                        // 否則作為單一價格處理
+                        priceData = [{"quantity": 1, "price": parseFloat(price)}];
+                    }
+                } catch (e) {
+                    // 如果解析失敗，嘗試轉換為數字
+                    priceData = {"quantity": 1, "price": parseFloat(price)};
+                }
+                
+                fetch("/api/editproduct", {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "partnumber": partnumber,
+                        "datecode": datecode,
+                        "quantity": parseInt(quantity),
+                        "price": priceData
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire("編輯失敗", data.message, "error");
+                    } else {
+                        localStorage.setItem("redirect_message", "edit_success");
+                        window.location.href = "/upload";
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    Swal.fire("編輯失敗", "請重試", "error");
+                });
+            }
+            
+            // 監聽編輯產品表單提交
+            document.querySelector(".edit_single").addEventListener("submit", function(e) {
+                e.preventDefault();
+                let quantity = document.querySelectorAll(".edit_single input[name='quantity']")[0].value;
+                let price = document.getElementById('editPrice').value;
+                
+                if (quantity && price) {
+                    submit_edit_product();
+                } else {
+                    Swal.fire("編輯失敗", "請填寫數量和價格", "error");
+                }
+            });
 
 
 
@@ -293,6 +491,47 @@
                             let history = document.getElementsByClassName("upload_history")[0];
                             let history_element = document.createElement("div");
                             history_element.className="upload_container";
+                            
+                            // 格式化價格顯示
+                            let priceDisplay = '';
+                            if (Array.isArray(item.price) && item.price.length > 0) {
+                                // 階梯價格格式
+                                priceDisplay = `
+                                    <div class="price-tiers">
+                                        ${item.price.map(tier => 
+                                            `<div class="price-tier-item">
+                                                <span class="price-tier-quantity">${tier.quantity}pcs:</span>
+                                                <span class="price-tier-price">NT$${tier.price}</span>
+                                            </div>`
+                                        ).join('')}
+                                    </div>
+                                `;
+                            } else if (typeof item.price === 'string') {
+                                try {
+                                    const parsedPrice = JSON.parse(item.price);
+                                    if (Array.isArray(parsedPrice) && parsedPrice.length > 0) {
+                                        priceDisplay = `
+                                            <div class="price-tiers">
+                                                ${parsedPrice.map(tier => 
+                                                    `<div class="price-tier-item">
+                                                        <span class="price-tier-quantity">${tier.quantity}pcs:</span>
+                                                        <span class="price-tier-price">NT$${tier.price}</span>
+                                                    </div>`
+                                                ).join('')}
+                                            </div>
+                                        `;
+                                    } else {
+                                        priceDisplay = `<div class="price-range">NT$${item.price}</div>`;
+                                    }
+                                } catch (e) {
+                                    priceDisplay = `<div class="price-range">NT$${item.price}</div>`;
+                                }
+                            } else if (typeof item.price === 'number') {
+                                priceDisplay = `<div class="price-range">NT$${item.price}</div>`;
+                            } else {
+                                priceDisplay = `<div class="price-placeholder">未定價</div>`;
+                            }
+                            
                             history_element.innerHTML=`
                             <div class="content">
                             <div>上傳時間</div>
@@ -311,10 +550,14 @@
                                 <div>${item.qty}</div>
                             </div>
                             <div class="content">
-                                <img src="../static/edit.png" class="editimg" onclick="handle_edit('${item.partnumber}','${item.brand}')"></img>
+                                <div>產品單價</div>
+                                <div style="font-size: 12px; line-height: 1.6;">${priceDisplay}</div>
                             </div>
                             <div class="content">
-                                <img src="../static/bin.png" class="deleteimg" onclick="delete_product('${item.partnumber}')"></img>
+                                <img src="../static/edit.png" class="editimg" onclick="handle_edit('${item.partnumber}','${item.brand}','${item.dc}',${JSON.stringify(item.price).replace(/"/g, '\\"')})"></img>
+                            </div>
+                            <div class="content">
+                                <img src="../static/bin.png" class="deleteimg" onclick="delete_product('${item.partnumber}','${item.dc}')"></img>
                             </div>
                             `;
                             history.appendChild(history_element);
@@ -346,7 +589,7 @@
 
 
             //刪除單個產品紀錄
-            function delete_product(pn){
+            function delete_product(pn, dc){
                 let token = localStorage.getItem("token");
                 fetch("/api/deleteproduct",{
                     method: "DELETE",
@@ -355,7 +598,8 @@
                         "Content-Type": "application/json" 
                     },
                     body : JSON.stringify({
-                        "partnumber":pn
+                        "partnumber": pn,
+                        "datecode": dc
                     })
                 })
                 .then(response=>response.json())

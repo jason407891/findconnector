@@ -54,6 +54,21 @@ ADD INDEX IF NOT EXISTS idx_status (status),
 ADD INDEX IF NOT EXISTS idx_created_at (created_at)
 """
 
+# SQL to add unique indexed composite key for product uploads
+# This enforces that (partnumber, upload_user, dc) must be unique
+# to support insert/update logic based on part number, supplier, and date code
+ADD_UNIQUE_PRODUCT_KEY = """
+ALTER TABLE products 
+ADD UNIQUE INDEX IF NOT EXISTS idx_unique_product (partnumber, upload_user, dc)
+"""
+
+# SQL to convert price column to JSON for tiered pricing support
+# Tiered pricing format: [{"quantity": 1, "price": 100}, {"quantity": 5, "price": 95}, ...]
+CONVERT_PRICE_TO_JSON = """
+ALTER TABLE products 
+MODIFY COLUMN price JSON COMMENT 'JSON array of tiered pricing: [{"quantity": N, "price": X}, ...]'
+"""
+
 # Python function to initialize chat tables
 def init_chat_tables():
     """Initialize chat-related database tables"""
@@ -127,6 +142,85 @@ def add_status_to_products():
         cursor.close()
         connection.close()
 
+def add_unique_product_key():
+    """Add unique composite index (partnumber, upload_user, dc) to products table"""
+    from api.utils import DatabaseManager
+    
+    db = DatabaseManager()
+    connection = db.get_connection()
+    cursor = connection.cursor()
+    
+    try:
+        print("Adding unique composite index to products table...")
+        cursor.execute(ADD_UNIQUE_PRODUCT_KEY)
+        connection.commit()
+        print("✓ Unique composite index (partnumber, upload_user, dc) added to products table")
+        print("  This enables automatic update when same part number, supplier, and date code are uploaded")
+    
+    except Exception as e:
+        print(f"✗ Error adding unique composite index: {e}")
+        connection.rollback()
+    
+    finally:
+        cursor.close()
+        connection.close()
+
+def convert_price_to_json():
+    """Convert price column from DECIMAL to JSON to support tiered pricing
+    
+    Tiered pricing format: [{"quantity": 1, "price": 100}, {"quantity": 5, "price": 95}, ...]
+    Existing price values will be wrapped in this format during conversion.
+    """
+    from api.utils import DatabaseManager
+    import json
+    
+    db = DatabaseManager()
+    connection = db.get_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    try:
+        print("Converting price column to JSON format for tiered pricing...")
+        
+        # First, get all existing price values
+        cursor.execute("SELECT id, price FROM products WHERE price IS NOT NULL")
+        products = cursor.fetchall()
+        
+        # Convert price column to JSON
+        cursor.execute(CONVERT_PRICE_TO_JSON)
+        connection.commit()
+        print("✓ Price column converted to JSON type")
+        
+        # Migrate existing price values to tiered format
+        # Each single price becomes [{"quantity": 1, "price": X}]
+        if products:
+            print(f"  Converting {len(products)} existing price records to tiered format...")
+            for product in products:
+                if product["price"]:
+                    try:
+                        # Try to parse as float
+                        price_val = float(product["price"])
+                        # Wrap in tiered format
+                        tiered_price = json.dumps([{"quantity": 1, "price": price_val}])
+                        cursor.execute(
+                            "UPDATE products SET price = %s WHERE id = %s",
+                            (tiered_price, product["id"])
+                        )
+                    except (ValueError, TypeError):
+                        print(f"  ⚠ Warning: Could not convert price for product id {product['id']}: {product['price']}")
+            connection.commit()
+            print(f"✓ Migrated {len(products)} existing price records")
+        
+        print("✓ Tiered pricing support enabled")
+        print("  Format: [{'quantity': 1, 'price': 100}, {'quantity': 5, 'price': 95}, ...]")
+    
+    except Exception as e:
+        print(f"✗ Error converting price column to JSON: {e}")
+        connection.rollback()
+    
+    finally:
+        cursor.close()
+        connection.close()
+
 def init_all():
     """Initialize all migrations"""
     print("=" * 50)
@@ -136,6 +230,8 @@ def init_all():
     init_chat_tables()
     add_role_to_users()
     add_status_to_products()
+    add_unique_product_key()
+    convert_price_to_json()
     
     print("=" * 50)
     print("✓ All migrations completed successfully!")

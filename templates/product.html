@@ -5,12 +5,65 @@
         <title>FINDCONNECTOR</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='product.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='tiered_pricing.css') }}"/>
         <meta charset="utf-8">
     </head>
     <body>
         <div class="header">
         </div>
         <div class="factorystock_title">{{partnumber}}<span>工廠價格和庫存</span></div>
+        
+        <!-- 篩選排序工具欄 -->
+        <div class="filter_toolbar">
+            <div class="filter_section">
+                <div class="filter_group">
+                    <label for="sortBy">排序：</label>
+                    <select id="sortBy">
+                        <option value="update_time">最新更新</option>
+                        <option value="price_asc">價格：低到高</option>
+                        <option value="price_desc">價格：高到低</option>
+                        <option value="qty_asc">庫存：低到高</option>
+                        <option value="qty_desc">庫存：高到低</option>
+                    </select>
+                </div>
+                
+                <div class="filter_group">
+                    <label for="brandFilter">品牌：</label>
+                    <input type="text" id="brandFilter" placeholder="如：MOLEX">
+                </div>
+                
+                <div class="filter_group">
+                    <label for="categoryFilter">分類：</label>
+                    <input type="text" id="categoryFilter" placeholder="如：連接器">
+                </div>
+            </div>
+            
+            <div class="filter_section">
+                <div class="filter_group">
+                    <label for="minPrice">最低價格：</label>
+                    <input type="number" id="minPrice" placeholder="0" min="0" step="0.01">
+                </div>
+                
+                <div class="filter_group">
+                    <label for="maxPrice">最高價格：</label>
+                    <input type="number" id="maxPrice" placeholder="999999" min="0" step="0.01">
+                </div>
+                
+                <div class="filter_group">
+                    <label for="minQty">最少庫存：</label>
+                    <input type="number" id="minQty" placeholder="0" min="0">
+                </div>
+                
+                <div class="filter_group">
+                    <label for="maxQty">最多庫存：</label>
+                    <input type="number" id="maxQty" placeholder="999999" min="0">
+                </div>
+                
+                <button class="filter_button" id="applyFilterBtn">應用篩選</button>
+                <button class="filter_button reset_button" id="resetFilterBtn">重置</button>
+            </div>
+        </div>
+        
         <div class="factorystock_area">
             <!--
             <div class="factorystock_container">
@@ -317,14 +370,44 @@
         </div>
         <script src="{{url_for('static', filename='common.js') }}"></script>
         <script>
-
-            //看現在是第幾頁
+            // 看現在是第幾頁
             let url = new URL(window.location.href);
             let currentPage = parseInt(url.searchParams.get("page")) || 1;
-
             let keyword = "{{partnumber}}";
-            function searchproduct(keyword, page){
-                fetch('/api/search/'+keyword+'?page='+page, {
+            
+            // 搜尋產品函數（支持排序和篩選）
+            function searchproduct(keyword, page, sortBy = "update_time", sortOrder = "DESC", filters = {}) {
+                // 構建 URL 參數
+                const searchUrl = new URL('/api/search/' + keyword, window.location.origin);
+                searchUrl.searchParams.set('page', page);
+                
+                // 處理排序參數
+                if (sortBy === "price_asc") {
+                    searchUrl.searchParams.set('sort', 'price');
+                    searchUrl.searchParams.set('order', 'ASC');
+                } else if (sortBy === "price_desc") {
+                    searchUrl.searchParams.set('sort', 'price');
+                    searchUrl.searchParams.set('order', 'DESC');
+                } else if (sortBy === "qty_asc") {
+                    searchUrl.searchParams.set('sort', 'qty');
+                    searchUrl.searchParams.set('order', 'ASC');
+                } else if (sortBy === "qty_desc") {
+                    searchUrl.searchParams.set('sort', 'qty');
+                    searchUrl.searchParams.set('order', 'DESC');
+                } else {
+                    searchUrl.searchParams.set('sort', 'update_time');
+                    searchUrl.searchParams.set('order', 'DESC');
+                }
+                
+                // 添加篩選參數
+                if (filters.minPrice) searchUrl.searchParams.set('min_price', filters.minPrice);
+                if (filters.maxPrice) searchUrl.searchParams.set('max_price', filters.maxPrice);
+                if (filters.minQty) searchUrl.searchParams.set('min_qty', filters.minQty);
+                if (filters.maxQty) searchUrl.searchParams.set('max_qty', filters.maxQty);
+                if (filters.brand) searchUrl.searchParams.set('brand', filters.brand);
+                if (filters.category) searchUrl.searchParams.set('category', filters.category);
+                
+                fetch(searchUrl.toString(), {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -332,14 +415,74 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    let displayarea=document.querySelector(".factorystock_area");
-                    data.forEach(product=>{
-                        let displayitem=document.createElement("div");
-                        displayitem.className="factorystock_container";
-                        if (product.product_img==null){
-                            product.product_img="https://findconnector.s3.ap-southeast-2.amazonaws.com/no-pictures.png"
+                    let displayarea = document.querySelector(".factorystock_area");
+                    
+                    // 清空之前的結果（除了第一頁）
+                    if (page === 1) {
+                        displayarea.innerHTML = '';
+                    }
+                    
+                    if (data.length === 0) {
+                        if (page === 1) {
+                            displayarea.innerHTML = '<div class="no_results">未找到相關產品</div>';
                         }
-                        displayitem.innerHTML=`
+                        return;
+                    }
+                    
+                    data.forEach(product => {
+                        let displayitem = document.createElement("div");
+                        displayitem.className = "factorystock_container";
+                        if (product.product_img == null) {
+                            product.product_img = "https://findconnector.s3.ap-southeast-2.amazonaws.com/no-pictures.png"
+                        }
+                        
+                        // 格式化價格顯示
+                        let priceDisplay = '';
+                        if (Array.isArray(product.price) && product.price.length > 0) {
+                            // 階梯價格格式
+                            priceDisplay = `
+                                <div class="product-card-price">
+                                    <div class="product-card-price-tiers">
+                                        ${product.price.map(tier => 
+                                            `<div class="product-card-price-tier">
+                                                <span class="product-card-price-tier-qty">${tier.quantity}pcs</span>
+                                                <span class="product-card-price-tier-price">NT$${tier.price}</span>
+                                            </div>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        } else if (typeof product.price === 'string') {
+                            // 嘗試解析JSON字符串
+                            try {
+                                const parsedPrice = JSON.parse(product.price);
+                                if (Array.isArray(parsedPrice) && parsedPrice.length > 0) {
+                                    priceDisplay = `
+                                        <div class="product-card-price">
+                                            <div class="product-card-price-tiers">
+                                                ${parsedPrice.map(tier => 
+                                                    `<div class="product-card-price-tier">
+                                                        <span class="product-card-price-tier-qty">${tier.quantity}pcs</span>
+                                                        <span class="product-card-price-tier-price">NT$${tier.price}</span>
+                                                    </div>`
+                                                ).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    priceDisplay = `<div class="product-card-price"><div class="product-card-price-single">NT$${product.price}</div></div>`;
+                                }
+                            } catch (e) {
+                                // 無法解析，直接顯示
+                                priceDisplay = `<div class="product-card-price"><div class="product-card-price-single">NT$${product.price}</div></div>`;
+                            }
+                        } else if (typeof product.price === 'number') {
+                            priceDisplay = `<div class="product-card-price"><div class="product-card-price-single">NT$${product.price}</div></div>`;
+                        } else {
+                            priceDisplay = `<div class="product-card-price"><div class="price-placeholder">未定價</div></div>`;
+                        }
+                        
+                        displayitem.innerHTML = `
                         <div class="factorystock_container">
                             <div class="factorystock_column">
                                 <img src="${product.product_img}" class="factorystock_image"></img>
@@ -370,7 +513,7 @@
                             </div>
                             <div class="factorystock_column">
                                 <div>產品單價</div>
-                                <div>${product.price}</div>
+                                ${priceDisplay}
                             </div>
                             <div class="factorystock_column">
                                 <div>聯繫窗口</div>
@@ -383,19 +526,61 @@
                 })
                 .catch(error => console.log(error));
             }
-            window.addEventListener("load", ()=>{
-                searchproduct(keyword,currentPage);
-                let keyword_display= document.querySelector(".search-bar");
-                keyword_display.value=keyword; //因為是input，所以要用VALUE，不能用INNERHTML
-            });
-
             
-            //下一頁
-            document.querySelector(".loadmore").addEventListener("click", ()=>{
-                currentPage = currentPage + 1;
-                window.location.href="/search/"+keyword+"?page="+currentPage;
+            // 獲取當前篩選條件
+            function getCurrentFilters() {
+                return {
+                    minPrice: document.getElementById('minPrice').value || null,
+                    maxPrice: document.getElementById('maxPrice').value || null,
+                    minQty: document.getElementById('minQty').value || null,
+                    maxQty: document.getElementById('maxQty').value || null,
+                    brand: document.getElementById('brandFilter').value || null,
+                    category: document.getElementById('categoryFilter').value || null
+                };
+            }
+            
+            // 頁面加載時執行
+            window.addEventListener("load", () => {
+                const sortBy = document.getElementById('sortBy').value;
+                searchproduct(keyword, currentPage, sortBy, "DESC", getCurrentFilters());
             });
-
+            
+            // 應用篩選按鈕
+            document.getElementById('applyFilterBtn').addEventListener('click', () => {
+                currentPage = 1;
+                const sortBy = document.getElementById('sortBy').value;
+                const filters = getCurrentFilters();
+                searchproduct(keyword, currentPage, sortBy, "DESC", filters);
+            });
+            
+            // 重置篩選按鈕
+            document.getElementById('resetFilterBtn').addEventListener('click', () => {
+                document.getElementById('sortBy').value = 'update_time';
+                document.getElementById('minPrice').value = '';
+                document.getElementById('maxPrice').value = '';
+                document.getElementById('minQty').value = '';
+                document.getElementById('maxQty').value = '';
+                document.getElementById('brandFilter').value = '';
+                document.getElementById('categoryFilter').value = '';
+                currentPage = 1;
+                searchproduct(keyword, currentPage, 'update_time', 'DESC', {});
+            });
+            
+            // 排序下拉框變更時
+            document.getElementById('sortBy').addEventListener('change', () => {
+                currentPage = 1;
+                const sortBy = document.getElementById('sortBy').value;
+                const filters = getCurrentFilters();
+                searchproduct(keyword, currentPage, sortBy, "DESC", filters);
+            });
+            
+            // 下一頁按鈕
+            document.querySelector(".loadmore").addEventListener("click", () => {
+                currentPage = currentPage + 1;
+                const sortBy = document.getElementById('sortBy').value;
+                const filters = getCurrentFilters();
+                searchproduct(keyword, currentPage, sortBy, "DESC", filters);
+            });
         </script>
     </body>
     </html>

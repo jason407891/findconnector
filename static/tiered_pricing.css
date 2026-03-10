@@ -1,0 +1,234 @@
+/* 階梯價格顯示樣式 */
+
+.price-tiers {
+    display: inline-block;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #333;
+    background-color: #f9f9f9;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 3px solid #FF781C;
+}
+
+.price-tier-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 3px 0;
+}
+
+.price-tier-quantity {
+    font-weight: 600;
+    color: #666;
+    min-width: 60px;
+}
+
+.price-tier-price {
+    color: #FF781C;
+    font-weight: 700;
+    text-align: right;
+}
+
+/* 單個價格層級卡片 */
+.price-tier-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    margin: 5px 0;
+    background: linear-gradient(135deg, #fff8f5 0%, #fffbf9 100%);
+    border: 1px solid #FFE6D9;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.price-tier-card:hover {
+    box-shadow: 0 2px 8px rgba(255, 120, 28, 0.15);
+    border-color: #FF781C;
+    background: linear-gradient(135deg, #fff0e6 0%, #fffaf7 100%);
+}
+
+.price-tier-card-qty {
+    font-weight: 600;
+    color: #555;
+    min-width: 70px;
+}
+
+.price-tier-card-price {
+    color: #FF781C;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* 最低價格標籤 */
+.lowest-price-badge {
+    display: inline-block;
+    background-color: #FF781C;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+/* 價格對比表格 */
+.price-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 13px;
+}
+
+.price-comparison-table th,
+.price-comparison-table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.price-comparison-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+}
+
+.price-comparison-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.price-comparison-table .qty-col {
+    font-weight: 600;
+    color: #666;
+}
+
+.price-comparison-table .price-col {
+    color: #FF781C;
+    font-weight: 700;
+    text-align: right;
+}
+
+/* 價格區間顯示 */
+.price-range {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #fff3e0;
+    border: 1px solid #FFE6CC;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #FF781C;
+    font-weight: 600;
+}
+
+.price-range-label {
+    color: #999;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .price-tiers {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .price-tier-item {
+        gap: 10px;
+    }
+    
+    .price-comparison-table {
+        font-size: 12px;
+    }
+    
+    .price-comparison-table th,
+    .price-comparison-table td {
+        padding: 6px 8px;
+    }
+}
+
+/* 價格加載動畫 */
+@keyframes priceLoadPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.price-loading {
+    animation: priceLoadPulse 1.5s ease-in-out infinite;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    height: 20px;
+    width: 100px;
+}
+
+/* 無價格佔位符 */
+.price-placeholder {
+    color: #ccc;
+    font-style: italic;
+    font-size: 12px;
+}
+
+/* 價格行政工具欄 */
+.price-actions-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.price-action-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.price-action-btn:hover {
+    border-color: #FF781C;
+    color: #FF781C;
+    background-color: #fff8f5;
+}
+
+/* 階梯價格表格在產品卡片中的顯示 */
+.product-card-price {
+    background-color: #f9f9f9;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border-left: 3px solid #FF781C;
+}
+
+.product-card-price-single {
+    font-size: 16px;
+    font-weight: 700;
+    color: #FF781C;
+}
+
+.product-card-price-tiers {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #666;
+}
+
+.product-card-price-tier {
+    display: flex;
+    justify-content: space-between;
+    margin: 2px 0;
+}
+
+.product-card-price-tier-qty {
+    color: #999;
+}
+
+.product-card-price-tier-price {
+    font-weight: 600;
+    color: #FF781C;
+}
