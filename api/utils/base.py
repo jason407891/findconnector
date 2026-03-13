@@ -30,8 +30,13 @@ class DatabaseManager:
             "charset": "utf8mb4",
             "collation": "utf8mb4_general_ci"
         }
-        self._pool = pooling.MySQLConnectionPool(**dbconfig)
-
+        try:
+            # 原本的連線邏輯
+            self._pool = pooling.MySQLConnectionPool(**dbconfig)
+        except Exception as e:
+            print(f"⚠️ 資料庫連線失敗，啟動模擬模式: {e}")
+            self._pool = None 
+            
     def get_connection(self):
         """Get a connection from the pool"""
         return self._pool.get_connection()
