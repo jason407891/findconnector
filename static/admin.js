@@ -1,6 +1,11 @@
 // API 配置
 const API_BASE_URL = '/api';
-const TOKEN_KEY = 'auth_token';
+const TOKEN_KEYS = ['auth_token', 'token'];
+
+function getToken() {
+    const token = localStorage.getItem(TOKEN_KEYS[0]) || localStorage.getItem(TOKEN_KEYS[1]);
+    return token === 'null' || !token ? null : token;
+}
 
 let currentEditingUserId = null;
 let currentEditingProductId = null;
@@ -9,7 +14,7 @@ let currentProductPage = 1;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     if (!token) {
         alert('請先登入');
         window.location.href = '/';
@@ -64,7 +69,7 @@ function switchPanel(panelName) {
 // ===== 儀表板 =====
 
 function loadStatistics() {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     const statisticsDiv = document.getElementById('statistics');
 
     fetch(`${API_BASE_URL}/admin/statistics`, {
@@ -109,7 +114,7 @@ function loadStatistics() {
 // ===== 用戶管理 =====
 
 function loadUsers() {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     const search = document.getElementById('userSearch').value;
     const usersTableDiv = document.getElementById('usersTable');
 

@@ -1,6 +1,11 @@
 // API 配置
 const API_BASE_URL = '/api';
-const TOKEN_KEY = 'auth_token';
+const TOKEN_KEYS = ['auth_token', 'token'];
+
+function getToken() {
+    const token = localStorage.getItem(TOKEN_KEYS[0]) || localStorage.getItem(TOKEN_KEYS[1]);
+    return token === 'null' || !token ? null : token;
+}
 
 let currentConversationId = null;
 let allConversations = [];
@@ -8,7 +13,7 @@ let messageRefreshInterval = null;
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     if (!token) {
         alert('請先登入');
         window.location.href = '/'; // 重定向到登入頁面
@@ -23,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== 對話列表功能 =====
 
 function loadConversations() {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     const conversationsList = document.getElementById('conversationsList');
 
     fetch(`${API_BASE_URL}/chat/conversations`, {
@@ -116,7 +121,7 @@ function selectConversation(conversationId) {
 // ===== 聊天功能 =====
 
 function loadChatHistory(conversationId) {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     const chatMessages = document.getElementById('chatMessages');
 
     fetch(`${API_BASE_URL}/chat/conversation/${conversationId}`, {
@@ -180,7 +185,7 @@ function sendMessage() {
         return;
     }
 
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     const sendBtn = event.currentTarget;
     sendBtn.disabled = true;
     sendBtn.textContent = '發送中...';
@@ -242,7 +247,7 @@ function createNewChat() {
         return;
     }
 
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
     const createBtn = event.currentTarget;
     createBtn.disabled = true;
     createBtn.textContent = '創建中...';
@@ -309,7 +314,7 @@ function createNewChat() {
 // ===== 工具函數 =====
 
 function updateUnreadCount() {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = getToken();
 
     fetch(`${API_BASE_URL}/chat/unread`, {
         method: 'GET',
